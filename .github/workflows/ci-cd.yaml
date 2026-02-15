@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: hospitality-api
+      KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG_CONTENT }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,27 +30,25 @@ jobs:
           path: image.tar
 
       - name: Set up kubectl
-        if: ${{ secrets.KUBECONFIG_CONTENT != '' }}
+        if: ${{ env.KUBECONFIG_CONTENT != '' }}
         uses: azure/setup-kubectl@v4
         with:
           version: "v1.29.0"
 
       - name: Configure kubeconfig
-        if: ${{ secrets.KUBECONFIG_CONTENT != '' }}
+        if: ${{ env.KUBECONFIG_CONTENT != '' }}
         run: |
           mkdir -p $HOME/.kube
           echo "${KUBECONFIG_CONTENT}" > $HOME/.kube/config
-        env:
-          KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG_CONTENT }}
 
       - name: Deploy manifests
-        if: ${{ secrets.KUBECONFIG_CONTENT != '' }}
+        if: ${{ env.KUBECONFIG_CONTENT != '' }}
         run: kubectl apply -f k8s/
 
       - name: Update deployment image
-        if: ${{ secrets.KUBECONFIG_CONTENT != '' }}
+        if: ${{ env.KUBECONFIG_CONTENT != '' }}
         run: kubectl set image deployment/hospitality-api hospitality-api=$IMAGE_NAME:${{ github.sha }}
 
       - name: Skip deploy (missing KUBECONFIG_CONTENT)
-        if: ${{ secrets.KUBECONFIG_CONTENT == '' }}
+        if: ${{ env.KUBECONFIG_CONTENT == '' }}
         run: echo "KUBECONFIG_CONTENT not set; skipping Kubernetes deploy."
