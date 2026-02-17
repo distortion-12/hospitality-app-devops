@@ -1,0 +1,54 @@
+name: CI-CD
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: hospitality-api
+      KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG_CONTENT }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        run: docker build -t $IMAGE_NAME:${{ github.sha }} .
+
+      - name: Save image
+        run: docker save $IMAGE_NAME:${{ github.sha }} -o image.tar
+
+      - name: Upload image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: image
+          path: image.tar
+
+      - name: Set up kubectl
+        if: ${{ env.KUBECONFIG_CONTENT != '' }}
+        uses: azure/setup-kubectl@v4
+        with:
+          version: "v1.29.0"
+
+      - name: Configure kubeconfig
+        if: ${{ env.KUBECONFIG_CONTENT != '' }}
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${KUBECONFIG_CONTENT}" > $HOME/.kube/config
+
+      - name: Deploy manifests
+        if: ${{ env.KUBECONFIG_CONTENT != '' }}
+        run: kubectl apply -f k8s/
+
+      - name: Update deployment image
+        if: ${{ env.KUBECONFIG_CONTENT != '' }}
+        run: kubectl set image deployment/hospitality-api hospitality-api=$IMAGE_NAME:${{ github.sha }}
+
+      - name: Skip deploy (missing KUBECONFIG_CONTENT)
+        if: ${{ env.KUBECONFIG_CONTENT == '' }}
+        run: echo "KUBECONFIG_CONTENT not set; skipping Kubernetes deploy."
