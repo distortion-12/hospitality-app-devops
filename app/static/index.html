@@ -4,7 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hospitality Booking App</title>
-  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .container { background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 40px; max-width: 600px; width: 100%; }
+    h1 { color: #333; margin-bottom: 10px; font-size: 28px; }
+    .subtitle { color: #666; margin-bottom: 30px; font-size: 14px; }
+    .section { margin-bottom: 30px; }
+    .section h2 { color: #667eea; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+    .room-type { display: flex; gap: 10px; margin-bottom: 15px; }
+    select, input, button { padding: 10px 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+    select, input { width: 100%; }
+    button { background: #667eea; color: white; cursor: pointer; font-weight: bold; transition: background 0.3s; }
+    button:hover { background: #764ba2; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    .result { margin-top: 15px; padding: 15px; border-radius: 5px; }
+    .available { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .unavailable { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    .loading { color: #667eea; font-style: italic; }
+    .status { margin-top: 10px; font-size: 12px; color: #999; }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -38,6 +58,64 @@
     <div class="status">Status: <span id="status">Ready</span></div>
   </div>
 
-  <script src="/static/app.js"></script>
+  <script>
+    const API_URL = window.location.origin;
+
+    async function checkAvailability() {
+      const roomType = document.getElementById('roomTypeCheck').value;
+      const resultDiv = document.getElementById('availabilityResult');
+      resultDiv.innerHTML = '<div class="result loading">Checking...</div>';
+      
+      try {
+        const response = await fetch(`${API_URL}/availability?room_type=${roomType}`);
+        const data = await response.json();
+        const cssClass = data.available ? 'available' : 'unavailable';
+        const message = data.available 
+          ? `✅ ${data.rooms_left} ${roomType} room(s) available`
+          : `❌ No ${roomType} rooms available`;
+        resultDiv.innerHTML = `<div class="result ${cssClass}">${message}</div>`;
+        document.getElementById('status').textContent = 'Ready';
+      } catch (error) {
+        resultDiv.innerHTML = `<div class="result unavailable">Error: ${error.message}</div>`;
+        document.getElementById('status').textContent = 'Error';
+      }
+    }
+
+    async function bookRoom() {
+      const roomType = document.getElementById('roomTypeBook').value;
+      const nights = parseInt(document.getElementById('nights').value);
+      const resultDiv = document.getElementById('bookingResult');
+      
+      if (!nights || nights < 1) {
+        resultDiv.innerHTML = '<div class="result unavailable">Please enter valid number of nights</div>';
+        return;
+      }
+      
+      resultDiv.innerHTML = '<div class="result loading">Processing booking...</div>';
+      document.getElementById('status').textContent = 'Booking...';
+      
+      try {
+        const response = await fetch(`${API_URL}/book`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ room_type: roomType, nights: nights })
+        });
+        const data = await response.json();
+        const cssClass = data.status === 'confirmed' ? 'available' : 'unavailable';
+        const message = data.status === 'confirmed'
+          ? `✅ Booking confirmed! ID: ${data.booking_id} for ${nights} night(s)`
+          : `❌ Booking failed`;
+        resultDiv.innerHTML = `<div class="result ${cssClass}">${message}</div>`;
+        document.getElementById('status').textContent = 'Ready';
+      } catch (error) {
+        resultDiv.innerHTML = `<div class="result unavailable">Error: ${error.message}</div>`;
+        document.getElementById('status').textContent = 'Error';
+      }
+    }
+
+    // Check availability on page load
+    window.addEventListener('load', checkAvailability);
+  </script>
 </body>
 </html>
+

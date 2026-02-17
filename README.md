@@ -1,14 +1,12 @@
-# Hospitality API on Kubernetes (Minikube)
+# Hospitality Management Application  
+Python • Docker • Jenkins CI/CD • Kubernetes • AWS
 
 A lightweight FastAPI-based Hospitality REST API deployed to Kubernetes with a zero-downtime rolling update strategy.
 
 ## Features
 
-- REST endpoints for room availability and booking
-- Production-ready Docker image
-- Kubernetes Deployment with explicit RollingUpdate strategy
-- NodePort Service for Minikube
-- GitHub Actions CI/CD workflow
+This project demonstrates the end-to-end deployment of a **Hospitality Management web application** built using **Python**.  
+The application is containerized using **Docker**, deployed using **Kubernetes**, and automated through a **CI/CD pipeline with Jenkins**.  
 
 ## Endpoints
 
@@ -18,9 +16,12 @@ A lightweight FastAPI-based Hospitality REST API deployed to Kubernetes with a z
 
 Example request:
 
-```bash
-curl "http://<MINIKUBE_IP>:30080/availability?room_type=standard"
-```
+- **Backend:** Python 
+- **Containerization:** Docker
+- **CI/CD:** Jenkins
+- **Orchestration:** Kubernetes (K8s)
+- **Cloud:** AWS
+- **Version Control:** Git
 
 ## Local build and run (Docker)
 
