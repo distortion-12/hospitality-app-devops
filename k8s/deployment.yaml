@@ -22,8 +22,8 @@ spec:
     spec:
       containers:
         - name: hospitality-api
-          image: datagami:latest
-          imagePullPolicy: Never
+          image: hospitality-api:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
           readinessProbe:
