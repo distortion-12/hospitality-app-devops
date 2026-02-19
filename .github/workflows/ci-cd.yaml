@@ -10,6 +10,9 @@ jobs:
     env:
       IMAGE_NAME: hospitality-api
       KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG_CONTENT }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,26 +32,34 @@ jobs:
           name: image
           path: image.tar
 
+      - name: Configure AWS credentials
+        if: ${{ env.KUBECONFIG_CONTENT != '' && env.AWS_ACCESS_KEY_ID != '' && env.AWS_SECRET_ACCESS_KEY != '' && env.AWS_REGION != '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
       - name: Set up kubectl
-        if: ${{ env.KUBECONFIG_CONTENT != '' }}
+        if: ${{ env.KUBECONFIG_CONTENT != '' && env.AWS_ACCESS_KEY_ID != '' && env.AWS_SECRET_ACCESS_KEY != '' && env.AWS_REGION != '' }}
         uses: azure/setup-kubectl@v4
         with:
           version: "v1.29.0"
 
       - name: Configure kubeconfig
-        if: ${{ env.KUBECONFIG_CONTENT != '' }}
+        if: ${{ env.KUBECONFIG_CONTENT != '' && env.AWS_ACCESS_KEY_ID != '' && env.AWS_SECRET_ACCESS_KEY != '' && env.AWS_REGION != '' }}
         run: |
           mkdir -p $HOME/.kube
           echo "${KUBECONFIG_CONTENT}" > $HOME/.kube/config
 
       - name: Deploy manifests
-        if: ${{ env.KUBECONFIG_CONTENT != '' }}
+        if: ${{ env.KUBECONFIG_CONTENT != '' && env.AWS_ACCESS_KEY_ID != '' && env.AWS_SECRET_ACCESS_KEY != '' && env.AWS_REGION != '' }}
         run: kubectl apply -f k8s/
 
       - name: Update deployment image
-        if: ${{ env.KUBECONFIG_CONTENT != '' }}
+        if: ${{ env.KUBECONFIG_CONTENT != '' && env.AWS_ACCESS_KEY_ID != '' && env.AWS_SECRET_ACCESS_KEY != '' && env.AWS_REGION != '' }}
         run: kubectl set image deployment/hospitality-api hospitality-api=$IMAGE_NAME:${{ github.sha }}
 
-      - name: Skip deploy (missing KUBECONFIG_CONTENT)
-        if: ${{ env.KUBECONFIG_CONTENT == '' }}
-        run: echo "KUBECONFIG_CONTENT not set; skipping Kubernetes deploy."
+      - name: Skip deploy (missing credentials)
+        if: ${{ env.KUBECONFIG_CONTENT == '' || env.AWS_ACCESS_KEY_ID == '' || env.AWS_SECRET_ACCESS_KEY == '' || env.AWS_REGION == '' }}
+        run: echo "Missing KUBECONFIG_CONTENT or AWS credentials; skipping Kubernetes deploy."
