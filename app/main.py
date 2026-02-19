@@ -16,18 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Serve static files (frontend)
-app_dir = os.path.dirname(os.path.abspath(__file__))
-static_dir = os.path.join(app_dir, "static")
-if os.path.exists(static_dir):
-    app.mount("/static", StaticFiles(directory=static_dir), name="static")
-
-
-@app.get("/")
-def root():
-    return FileResponse(os.path.join(static_dir, "index.html"))
-
-
+# Define models
 class AvailabilityResponse(BaseModel):
     available: bool
     rooms_left: int
@@ -43,6 +32,7 @@ class BookingResponse(BaseModel):
     status: str
 
 
+# API Routes (must be defined BEFORE static file mounting)
 @app.get("/healthz")
 def healthz():
     return {"status": "ok"}
@@ -63,3 +53,17 @@ def book_room(payload: BookingRequest):
         "booking_id": "BK-" + payload.room_type.upper() + "-001",
         "status": "confirmed",
     }
+
+
+# Serve static files (frontend) - MUST be last
+app_dir = os.path.dirname(os.path.abspath(__file__))
+static_dir = os.path.join(app_dir, "static")
+
+
+@app.get("/")
+def root():
+    return FileResponse(os.path.join(static_dir, "index.html"))
+
+
+if os.path.exists(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")

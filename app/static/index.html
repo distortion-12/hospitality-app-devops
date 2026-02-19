@@ -3,119 +3,132 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hospitality Booking App</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-    .container { background: white; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 40px; max-width: 600px; width: 100%; }
-    h1 { color: #333; margin-bottom: 10px; font-size: 28px; }
-    .subtitle { color: #666; margin-bottom: 30px; font-size: 14px; }
-    .section { margin-bottom: 30px; }
-    .section h2 { color: #667eea; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
-    .room-type { display: flex; gap: 10px; margin-bottom: 15px; }
-    select, input, button { padding: 10px 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
-    select, input { width: 100%; }
-    button { background: #667eea; color: white; cursor: pointer; font-weight: bold; transition: background 0.3s; }
-    button:hover { background: #764ba2; }
-    button:disabled { background: #ccc; cursor: not-allowed; }
-    .result { margin-top: 15px; padding: 15px; border-radius: 5px; }
-    .available { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-    .unavailable { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-    .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
-    .loading { color: #667eea; font-style: italic; }
-    .status { margin-top: 10px; font-size: 12px; color: #999; }
-  </style>
+  <title>Luxury Hospitality Booking</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1>🏨 Hospitality Booking</h1>
-    <p class="subtitle">Room availability checker and booking system</p>
-
-    <!-- Check Availability Section -->
-    <div class="section">
-      <h2>Check Availability</h2>
-      <select id="roomTypeCheck" onchange="checkAvailability()">
-        <option value="standard">Standard Room</option>
-        <option value="deluxe">Deluxe Room</option>
-      </select>
-      <div id="availabilityResult"></div>
-    </div>
-
-    <!-- Book Room Section -->
-    <div class="section">
-      <h2>Book a Room</h2>
-      <div class="room-type">
-        <select id="roomTypeBook">
-          <option value="standard">Standard Room</option>
-          <option value="deluxe">Deluxe Room</option>
-        </select>
+  <div class="page-wrapper">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <i class="fas fa-hotel"></i>
+          <h1>Luxury Stays</h1>
+        </div>
+        <p class="tagline">Premium Room Booking</p>
       </div>
-      <input type="number" id="nights" placeholder="Number of nights" min="1" max="30" value="1">
-      <button onclick="bookRoom()" style="width: 100%; margin-top: 10px;">Book Now</button>
-      <div id="bookingResult"></div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+      <!-- Hero Section -->
+      <section class="hero">
+        <h2>Your Perfect Stay Awaits</h2>
+        <p>Book luxury rooms with exceptional service</p>
+      </section>
+
+      <!-- Room Cards Section -->
+      <div class="rooms-grid">
+        <div class="room-card">
+          <div class="room-icon standard">
+            <i class="fas fa-bed"></i>
+          </div>
+          <h3>Standard Room</h3>
+          <p class="subtitle">Comfortable & Convenient</p>
+          <div class="amenities-list">
+            <span><i class="fas fa-wifi"></i> WiFi</span>
+            <span><i class="fas fa-tv"></i> Smart TV</span>
+            <span><i class="fas fa-shower"></i> Shower</span>
+          </div>
+          <div class="availability" id="standardAvail">
+            <span class="badge loading"><i class="fas fa-spinner fa-spin"></i> Checking...</span>
+          </div>
+        </div>
+
+        <div class="room-card">
+          <div class="room-icon deluxe">
+            <i class="fas fa-crown"></i>
+          </div>
+          <h3>Deluxe Room</h3>
+          <p class="subtitle">Premium Luxury</p>
+          <div class="amenities-list">
+            <span><i class="fas fa-wifi"></i> WiFi</span>
+            <span><i class="fas fa-bath"></i> Jacuzzi</span>
+            <span><i class="fas fa-concierge-bell"></i> Concierge</span>
+          </div>
+          <div class="availability" id="deluxeAvail">
+            <span class="badge loading"><i class="fas fa-spinner fa-spin"></i> Checking...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Grid -->
+      <div class="main-grid">
+        <!-- Check Availability -->
+        <section class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-search"></i> Check Availability</h2>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label>Room Type</label>
+              <select id="roomTypeCheck" onchange="checkAvailability()">
+                <option value="standard">Standard Room</option>
+                <option value="deluxe">Deluxe Room</option>
+              </select>
+            </div>
+            <div id="availabilityResult"></div>
+          </div>
+        </section>
+
+        <!-- Book Room -->
+        <section class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-calendar-check"></i> Book Now</h2>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label>Room Type</label>
+              <select id="roomTypeBook">
+                <option value="standard">Standard Room</option>
+                <option value="deluxe">Deluxe Room</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Number of Nights</label>
+              <input type="number" id="nights" min="1" max="30" value="1">
+            </div>
+
+            <button class="btn" onclick="bookRoom()">
+              <i class="fas fa-check"></i> Book Room
+            </button>
+
+            <div id="bookingResult"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Status -->
+      <div class="status">
+        <span class="status-dot" id="status"></span>
+        <span id="statusText">Ready</span>
+      </div>
     </div>
 
-    <div class="status">Status: <span id="status">Ready</span></div>
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Luxury Stays &copy; 2024. Premium Hospitality Services.</p>
+    </footer>
   </div>
 
-  <script>
-    const API_URL = window.location.origin;
-
-    async function checkAvailability() {
-      const roomType = document.getElementById('roomTypeCheck').value;
-      const resultDiv = document.getElementById('availabilityResult');
-      resultDiv.innerHTML = '<div class="result loading">Checking...</div>';
-      
-      try {
-        const response = await fetch(`${API_URL}/availability?room_type=${roomType}`);
-        const data = await response.json();
-        const cssClass = data.available ? 'available' : 'unavailable';
-        const message = data.available 
-          ? `✅ ${data.rooms_left} ${roomType} room(s) available`
-          : `❌ No ${roomType} rooms available`;
-        resultDiv.innerHTML = `<div class="result ${cssClass}">${message}</div>`;
-        document.getElementById('status').textContent = 'Ready';
-      } catch (error) {
-        resultDiv.innerHTML = `<div class="result unavailable">Error: ${error.message}</div>`;
-        document.getElementById('status').textContent = 'Error';
-      }
-    }
-
-    async function bookRoom() {
-      const roomType = document.getElementById('roomTypeBook').value;
-      const nights = parseInt(document.getElementById('nights').value);
-      const resultDiv = document.getElementById('bookingResult');
-      
-      if (!nights || nights < 1) {
-        resultDiv.innerHTML = '<div class="result unavailable">Please enter valid number of nights</div>';
-        return;
-      }
-      
-      resultDiv.innerHTML = '<div class="result loading">Processing booking...</div>';
-      document.getElementById('status').textContent = 'Booking...';
-      
-      try {
-        const response = await fetch(`${API_URL}/book`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ room_type: roomType, nights: nights })
-        });
-        const data = await response.json();
-        const cssClass = data.status === 'confirmed' ? 'available' : 'unavailable';
-        const message = data.status === 'confirmed'
-          ? `✅ Booking confirmed! ID: ${data.booking_id} for ${nights} night(s)`
-          : `❌ Booking failed`;
-        resultDiv.innerHTML = `<div class="result ${cssClass}">${message}</div>`;
-        document.getElementById('status').textContent = 'Ready';
-      } catch (error) {
-        resultDiv.innerHTML = `<div class="result unavailable">Error: ${error.message}</div>`;
-        document.getElementById('status').textContent = 'Error';
-      }
-    }
-
-    // Check availability on page load
-    window.addEventListener('load', checkAvailability);
-  </script>
+  <script src="/static/app.js"></script>
 </body>
 </html>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
+
 

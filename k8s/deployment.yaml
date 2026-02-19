@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: hospitality-api
-          image: 724554527869.dkr.ecr.ap-south-1.amazonaws.com/hospitality-api:2.0.0
+          image: hospitality-api:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
