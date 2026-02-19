@@ -221,17 +221,24 @@ hospitality-app-devops/
 │       ├── index.html       # Frontend
 │       ├── app.js           # JavaScript
 │       └── styles.css       # Styling
+│
 ├── .github/
 │   └── workflows/
 │       └── ci-cd.yaml       # GitHub Actions workflow
+│
 ├── k8s/
 │   ├── deployment.yaml      # Kubernetes deployment
 │   ├── service.yaml         # Kubernetes service
 │   └── ingress.yaml         # Kubernetes ingress
+│
+├── terraform/
+│   └── main.tf              # Terraform configuration for AWS infrastructure (EKS)
+│
 ├── Dockerfile               # Container image definition
 ├── requirements.txt         # Python dependencies
 ├── commands.md              # Useful commands reference
-└── README.md                # This file
+└── README.md                # Project documentation
+
 ```
 
 ## 🛠️ Troubleshooting
