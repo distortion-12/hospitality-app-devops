@@ -1,10 +1,18 @@
-# Hospitality Management Application
-
-[![CI-CD](https://github.com/distortion-12/hospitality-app-devops/actions/workflows/ci-cd.yaml/badge.svg)](https://github.com/distortion-12/hospitality-app-devops/actions/workflows/ci-cd.yaml)
+# Group 10D12 DO-48: Hospitality Management Application
+## Division
+D12
+## Group
+Group 10D12
+## Project Number
+DO-48
+## Problem Statement
+Deploy Hospitality App to Kubernetes
 
 **Python • Docker • GitHub Actions • Kubernetes • AWS EKS**
 
 A production-ready Hospitality Management REST API with automated CI/CD pipeline, containerized deployment, and Kubernetes orchestration on AWS.
+
+[![CI-CD](https://github.com/distortion-12/hospitality-app-devops/actions/workflows/ci-cd.yaml/badge.svg)](https://github.com/distortion-12/hospitality-app-devops/actions/workflows/ci-cd.yaml)
 
 ## 🏗️ Architecture
 
@@ -294,6 +302,14 @@ kubectl top pods -l app=hospitality-api
 
 Required environment variables (set in k8s deployment):
 - `PORT`: API server port (default: 8000)
+
+## Group Memebers
+- TANISH ISRANI
+- ABHISHEK GUPTA
+- SOURABH PATEL
+- SAMARTH PATIDAR
+- YASH DASHORE
+- RAMAKANT SINGH
 
 ## 🤝 Contributing
 
